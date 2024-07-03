@@ -1,4 +1,4 @@
 ${time} = Get-Date
 git add *
-git commit -m ${time}
+git commit -m Get-Date
 git push
