@@ -1,17 +1,55 @@
-from math import log
+import os.path
+from math import log,sqrt
 from src.datastruct.InverseList import InverseList as IL
 from .SkipList import SkipList as SL
+path = 'D:\桌面\info_search\data'
+
+class array:
+    def __init__(self):
+        self.dim = 0
+        self.arr = dict()
+
+    def __setitem__(self, key, value):
+        self.arr[key] = value
+
+    def __getitem__(self, item):
+        return self.arr.get(item,0)
+
+    def __len__(self):
+        ans = 0
+        for v in self.arr.values():
+            ans += v**2
+        return sqrt(ans)
+
+    def l(self):
+        ans = 0
+        for v in self.arr.values():
+            ans += v ** 2
+        return sqrt(ans)
+
+    def get_term(self):
+        return set(self.arr.keys())
+
+    def sim(self,other):
+        terms = self.get_term()
+        terms = terms.union(other.get_term())
+        ans = 0
+        for term in terms:
+            ans += self[term] * other[term]
+        ans = ans / (self.l() * other.l())
+        return ans
+
+
 class inverse_dict:
     def __init__(self):
         """
         创建词典
         :df:词频，某个单词在多少篇文章出现
-        :dic: 词典，term->inversedict
         """
         self.dic = dict()
         self.df = dict()
-        self.docid2docdic = dict()
         self.N = 0
+
     def __getitem__(self, term):
         """
         词元->倒排表
@@ -35,19 +73,42 @@ class inverse_dict:
             self.dic[term] = IL(term)
             self.df[term] = 0
 
-        self.dic[term].insert(doc_id, term_idx, tf,self.docid2docdic)
+        self.dic[term].insert(doc_id, term_idx, tf)
         self.df[term] += 1
         self.N = max(self.N, doc_id)
 
+    def tf_idf_array(self, terms):
+        tmp_ans = self.intersection(terms)
+        term_arr = array()
+        # 计算查询向量
+        for term in set(terms):
+            tf = terms.count(term)
+            term_arr[term] = tf
+        fin_sim = dict()
+        for doc_id in tmp_ans:
+            doc_arr = array()
+            with open(os.path.join(path,str(doc_id)),'r') as f:
+                text = f.read().split()
+            for text_term in set(text):
+                tf = text.count(text_term)
+                doc_arr[text_term] = tf
+            fin_sim[doc_id] = term_arr.sim(doc_arr)
+        tmp_ans = list(tmp_ans)
+        tmp_ans.sort(key=lambda x: fin_sim[x], reverse=True)
+        # tmp_ans = list(tmp_ans).sort(key = lambda x:fin_sim[x],reverse=True)
+        return tmp_ans,fin_sim
 
     def tf_idf(self, terms):
         tmp_ans = self.intersection(terms)
         score = dict()
         for doc_id in tmp_ans:
-            docids = self.docid2docdic[doc_id]
+            with open(os.path.join(path,str(doc_id)),'r') as f:
+                text = f.read()
             for term in terms:
-                score[doc_id] = score.get(doc_id,0) + docids[term] * log(self.N/self.df[term])
-        tmp_ans = list(tmp_ans).sort(key = lambda x:score[x],reverse=True)
+                tf = text.count(term)
+                score[doc_id] = score.get(doc_id,0) + (1 + log(tf)) * log(self.N/self.df[term])
+        tmp_ans = list(tmp_ans)
+        tmp_ans.sort(key = lambda x:score[x],reverse=True)
         return tmp_ans,score
 
     def intersection(self, terms):
@@ -59,7 +120,7 @@ class inverse_dict:
         """
         # 根据词频升序排列
         tmp_skiplist = SL()
-        terms.sort(key=lambda x: self.df[x])
+        terms.sort(key=lambda x: self.df.get(x,1e9))
         tmp_ans = self.dic.get(terms[0],None)
         if tmp_ans is None:
             return set()

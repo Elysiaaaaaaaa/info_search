@@ -53,7 +53,8 @@ class k_gram_dict:
     def jaccard(self, tim, term1_cnt, term2):
         return tim / (term1_cnt + len(term2) - self.k*2 + 2 - tim)
 
-    def k_gram_handle(self, k_gram, J=0.5):
+
+    def k_gram_handle(self, k_gram, J=0.7):
         """
         处理正则+拼写矫正
         :param k_gram:

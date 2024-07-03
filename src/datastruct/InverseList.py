@@ -44,6 +44,7 @@ class InverseList:
         for node in self.nodes:
             ans.add(node.doc_id)
         return ans
+
     def search(self, doc_id, doc_begin=0):
         """
         在跳跃表中查找并返回键为doc_id的键值对
@@ -53,7 +54,7 @@ class InverseList:
                 return i
         return -1
 
-    def insert(self, doc_id, term_idx, tf, docid2docdic):
+    def insert(self, doc_id, term_idx, tf):
         """
         向表中插入由键值对封装后得到的节点
         :param doc_id: 文章索引
@@ -62,12 +63,6 @@ class InverseList:
         """
         node = _InverseNode(doc_id, term_idx, tf)
         self.nodes.append(node)
-        if doc_id in docid2docdic.keys():
-            docid2docdic[doc_id] = docid2docdic[doc_id].update([[self.term,tf]])
-        else:
-            tmp = dict()
-            tmp[self.term] = tf
-            docid2docdic[doc_id] = tmp
 
     def delete(self, doc_id:int,begin_idx=0):
         """

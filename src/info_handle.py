@@ -1,5 +1,4 @@
 import os
-import re
 import tqdm
 from src.datastruct.k_gram import k_gram_dict
 from src.datastruct.InverseDict import inverse_dict
@@ -9,7 +8,7 @@ k_gram = 2
 KGD = k_gram_dict(k_gram)
 ID = inverse_dict()
 pattern = r'[^\w\s]'
-demo = True
+demo = False
 
 docnt = 0
 for doc in tqdm.tqdm(docs):
@@ -27,14 +26,14 @@ for doc in tqdm.tqdm(docs):
     # 去除标点
     # word = re.sub(pattern, ' ', word)
     doc_id = int(doc)
-    # KGD.add_text(text,doc_id)
+    KGD.add_text(text,doc_id)
     for term in set(text.split()):
         ID.add_term(doc_id, term, tf=text.count(term))
     # td.add_term_kgram(doc_id,word,k_gram)
 # print('1')
 if not demo:
-    with open(r'C:\Users\Elysia\code\python\data_search_hw\src\ans-2024.txt','w') as w:
-        with open(r'C:\Users\Elysia\code\python\data_search_hw\src\query-2024.txt','r') as r:
+    with open(r'D:\桌面\info_search\37220222203885.txt','w') as w:
+        with open(r'D:\桌面\info_search\query-2024.txt','r') as r:
             key_words = r.readlines()
         for key_word in key_words:
             key_word = key_word.split()
@@ -42,28 +41,29 @@ if not demo:
             for i in range(len(ans)):
                 w.write(str(ans[i]))
                 w.write('\t')
-                # ans[i] = str(ans[i])
-            # w.write(' '.join(ans))
             w.write('\n')
 
+print('i.并集 and')
+print('u.交集 or')
+print('e.差集 -')
+print('ti. tfidf')
+print('tia. 向量空间')
+print('.i.通配符并集 and')
+print('.u.通配符交集 or')
+print('.e.通配符差集 -')
 while True:
-    print('i.并集 and')
-    print('u.交集 or')
-    print('e.差集 -')
-    print('.i.通配符并集 and')
-    print('.u.通配符交集 or')
-    print('.e.通配符差集 -')
     tye = input()
     key_word = input().split()
-    # try:
     if tye == 'i':
         print(ID.intersection(key_word))
     elif tye == 'u':
         print(ID.union(key_word))
     elif tye == 'e':
         print(ID.excepts(key_word[0],key_word[1]))
-    elif tye == 'tf-idf':
+    elif tye == 'ti':
         print(ID.tf_idf(key_word))
+    elif tye == 'tia':
+        print(ID.tf_idf_array(key_word))
     elif tye == '.i':
         print(KGD.intersection_kgram(key_word))
     elif tye == '.u':
