@@ -29,11 +29,10 @@ for doc in tqdm.tqdm(docs):
     KGD.add_text(text,doc_id)
     for term in set(text.split()):
         ID.add_term(doc_id, term, tf=text.count(term))
-    # td.add_term_kgram(doc_id,word,k_gram)
-# print('1')
+
 if not demo:
-    with open(r'D:\桌面\info_search\37220222203885.txt','w') as w:
-        with open(r'D:\桌面\info_search\query-2024.txt','r') as r:
+    with open(r'..\37220222203885.txt','w') as w:
+        with open(r'..\query-2024.txt','r') as r:
             key_words = r.readlines()
         for key_word in key_words:
             key_word = key_word.split()

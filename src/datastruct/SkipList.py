@@ -4,7 +4,6 @@ class _SkipNode:
     """
     表示跳跃表节点的类
     """
-
     def __init__(self, doc_id, term_idx, level, cnt):
         """
         :param doc_id: 文章索引

@@ -2,7 +2,7 @@ import os.path
 from math import log,sqrt
 from src.datastruct.InverseList import InverseList as IL
 from .SkipList import SkipList as SL
-path = 'D:\桌面\info_search\data'
+path = '..\..\data'
 
 class array:
     def __init__(self):
