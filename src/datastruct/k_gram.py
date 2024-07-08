@@ -1,6 +1,7 @@
 from src.datastruct.InverseDict import inverse_dict as ID
 import re
 
+path = '../../data'
 class _k_gram:
     def __init__(self, k_gram):
         self.k_gram = k_gram
@@ -50,11 +51,19 @@ class k_gram_dict:
             tf = text.count(k_gram)
             self.k_gram_dict[k_gram].term_dict.add_term(doc_id, term, tf=tf, term_idx=0)
 
-    def jaccard(self, tim, term1_cnt, term2):
-        return tim / (term1_cnt + len(term2) - self.k*2 + 2 - tim)
+    def jaccard(self, s1, s2):
+        se1 = set()
+        se2 = set()
+        for i in range(len(s1) - self.k + 1):
+            se1.add(s1[i:i + self.k])
+        s2 = ''.join(s2)
+        for i in range(len(s2) - self.k + 1):
+            se2.add(s2[i:i + self.k])
+        top = se1.intersection(se2)
+        down = se1.union(se2)
+        return len(top)/len(down)
 
-
-    def k_gram_handle(self, k_gram, J=0.7):
+    def k_gram_handle(self, k_gram, J=0.4):
         """
         处理正则+拼写矫正
         :param k_gram:
@@ -90,7 +99,8 @@ class k_gram_dict:
                     #     term = term.intersection(tmp)
         ans = set()
         for k, v in term_time.items():
-            j = self.jaccard(v,cnt,k)
+            k_gram__ = k_gram.split('.')
+            j = self.jaccard(k, k_gram__)
             if j > J:
                 for kt in term_docid[k]:
                     ans.add(kt.doc_id)
@@ -109,9 +119,10 @@ class k_gram_dict:
         :return:
         """
         ans = None
-        for term in terms:
+        ans = self.k_gram_handle(terms[0])
+        for term in terms[1:]:
             if ans is None:
-                ans = self.k_gram_handle(term)
+                break
             else:
                 ans = ans.intersection(self.k_gram_handle(term))
             if ans is None:

@@ -30,7 +30,7 @@ class SkipList:
     对应于一个倒排记录
     """
 
-    def __init__(self, max_level=20, portion=0.5):
+    def __init__(self, max_level=10, portion=0.5):
         """
         创建空的跳跃表
         :param max_level: 跳跃表所有节点引用所可能达到的最高阶数
@@ -207,6 +207,3 @@ if __name__ == '__main__':
     print(skip_list.skip_delete(3))  # (19, 10)
     print(len(skip_list))  # 9
     skip_list.skip_display()
-
-
-
