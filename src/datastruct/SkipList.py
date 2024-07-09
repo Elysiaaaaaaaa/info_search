@@ -186,6 +186,7 @@ class SkipList:
 
 
 if __name__ == '__main__':
+    # 测试代码
     skip_list = SkipList(10, 0.5)
     skip_list.skip_insert(3, 5, 3)
     skip_list.skip_insert(12, 9, 3)

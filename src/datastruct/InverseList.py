@@ -3,7 +3,6 @@ class _InverseNode:
     对应于一个倒排记录
     表示文章节点的类
     """
-
     def __init__(self, doc_id, term_idx, tf):
         """
         :param doc_id: 文章索引
