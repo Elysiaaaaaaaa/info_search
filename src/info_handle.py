@@ -4,7 +4,7 @@ from src.datastruct.k_gram import k_gram_dict
 from src.datastruct.InverseDict import inverse_dict
 docs = os.listdir("../data")
 main_path = r'..\data'
-k_gram = 2
+k_gram = 3
 KGD = k_gram_dict(k_gram)
 ID = inverse_dict()
 pattern = r'[^\w\s]'
@@ -14,7 +14,7 @@ docnt = 0
 for doc in tqdm.tqdm(docs):
     # 处理单个文件
     docnt += 1
-    if demo and docnt > 10:
+    if demo and docnt > 100:
         print('demo ok')
         break
     path = os.path.join(main_path, doc)
@@ -46,28 +46,41 @@ print('i.并集 and')
 print('u.交集 or')
 print('e.差集 -')
 print('ti. tfidf')
-print('tia. 向量空间')
+print('tac. tfidf_array_cos')
 print('.i.通配符并集 and')
 print('.u.通配符交集 or')
 print('.e.通配符差集 -')
 while True:
     tye = input()
+    ans = None
+    score = None
     key_word = input().split()
-    if tye == 'i':
-        print(ID.intersection(key_word))
-    elif tye == 'u':
-        print(ID.union(key_word))
-    elif tye == 'e':
-        print(ID.excepts(key_word[0],key_word[1]))
-    elif tye == 'ti':
-        print(ID.tf_idf(key_word))
-    elif tye == 'tia':
-        print(ID.tf_idf_array(key_word))
-    elif tye == '.i':
-        print(KGD.intersection_kgram(key_word))
-    elif tye == '.u':
-        print(KGD.union_kgram(key_word))
-    elif tye == '.e':
-        print(KGD.except_kgram(key_word[0],key_word[0]))
-    else:
-        print('输入错误')
+    flag = True
+    try:
+        if tye == 'i':
+            ans = ID.intersection(key_word,f=True)
+        elif tye == 'u':
+            ans = ID.union(key_word,f=True)
+        elif tye == 'e':
+            ans = ID.excepts(key_word[0],key_word[1],f=True)
+        elif tye == 'ti':
+            ans,score = ID.tf_idf(key_word)
+        elif tye == 'tia':
+            ans,score = ID.tf_idf_array(key_word)
+        elif tye == '.i':
+            ans = KGD.intersection_kgram(key_word)
+        elif tye == '.u':
+            ans = KGD.union_kgram(key_word)
+        elif tye == '.e':
+            ans = KGD.except_kgram(key_word[0],key_word[1])
+        else:
+            flag = False
+            print('输入错误')
+        if flag:
+            print("答案个数：",len(ans))
+            print(ans)
+            if score:
+                for term in ans:
+                    print(term,':',score[term])
+    except Exception as e:
+        print(e)

@@ -4,14 +4,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/data" />
     </content>
-    <orderEntry type="jdk" jdkName="v1" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (v1) (2)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-  </component>
-  <component name="PyNamespacePackagesService">
-    <option name="namespacePackageFolders">
-      <list>
-        <option value="$MODULE_DIR$/src" />
-      </list>
-    </option>
   </component>
 </module>

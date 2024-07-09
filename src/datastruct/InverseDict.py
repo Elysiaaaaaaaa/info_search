@@ -2,7 +2,7 @@ import os.path
 from math import log,sqrt
 from src.datastruct.InverseList import InverseList as IL
 from .SkipList import SkipList as SL
-path = '..\..\data'
+path = '..\data'
 
 class array:
     def __init__(self):
@@ -78,7 +78,7 @@ class inverse_dict:
         self.N = max(self.N, doc_id)
 
     def tf_idf_array(self, terms):
-        tmp_ans = self.intersection(terms)
+        tmp_ans = self.union(terms)
         term_arr = array()
         # 计算查询向量
         for term in set(terms):
@@ -99,7 +99,7 @@ class inverse_dict:
         return tmp_ans,fin_sim
 
     def tf_idf(self, terms):
-        tmp_ans = self.intersection(terms)
+        tmp_ans = self.union(terms)
         score = dict()
         for doc_id in tmp_ans:
             with open(os.path.join(path,str(doc_id)),'r') as f:
@@ -111,7 +111,7 @@ class inverse_dict:
         tmp_ans.sort(key = lambda x:score[x],reverse=True)
         return tmp_ans,score
 
-    def intersection(self, terms):
+    def intersection(self, terms, f = False):
         """
         查找与term相关的文章
         并集
@@ -139,9 +139,13 @@ class inverse_dict:
                 tmp_skiplist = skiplist
             else:
                 break
-        return tmp_skiplist.to_set()
+        ans = tmp_skiplist.to_set()
+        if f:
+            ans = list(ans)
+            ans.sort(key=lambda x:self.df.get(x,1e9))
+        return ans
 
-    def union(self,terms):
+    def union(self,terms,f=False):
         """
         查找与term相关的文章
         交集
@@ -154,17 +158,26 @@ class inverse_dict:
             ter = self.dic.get(term,None)
             if ter is not None:
                 tmp_ans = tmp_ans.union(ter.to_set())
-        return tmp_ans
+        ans = tmp_ans
+        if f:
+            ans = list(ans)
+            ans.sort(key=lambda x:self.df.get(x,1e9))
+        return ans
 
-    def excepts(self,term1,term2):
+    def excepts(self,term1,term2,f=False):
         """
         查找与term相关的文章
         差集，term1-term2
         """
         ter1 = self.dic.get(term1,None)
         ter2 = self.dic.get(term2,None)
-        ter1 = ter1.to_set(term1)
-        ter2 = ter2.to_set(term2)
+        ter1 = ter1.to_set()
         if ter2 is not None:
+            ter2 = ter2.to_set()
             ter1 = ter1.difference(ter2)
-        return ter1
+
+        ans = ter1
+        if f:
+            ans = list(ans)
+            ans.sort(key=lambda x:self.df.get(x,1e9))
+        return ans
